@@ -7,6 +7,9 @@ const morgan = require('morgan');
 // Better than fetch module for testing and making requests
 const axios = require('axios');
 
+// Caching using the api cache will enhance the performance
+const apicache = require('apicache');
+
 app.use(bodyParser.json());
 
 //Middleware used for logging requests to the application.
@@ -17,26 +20,27 @@ const PORT = process.env.PORT || 2222;
 
 
 //Basic API testing
-app.get('/api/ping', (req, res) => {
+app.get('/api/ping', cache('60 minutes'), (req, res) => {
     res.status(200).send({
         success: 'true',
     })
 })
 
 //Fetching all posts
-app.get('/api/posts', (req, res) => {
+app.get('/api/posts', cache('60 minutes'), (req, res) => {
     //Replace with the custom url
      // Gets all posts with at least one tag from the API using axios
+     //http://localhost:8888/api/
   axios.all([
-    axios.get('http://localhost:2222/blog/posts?tag=tech'),
-    axios.get('http://localhost:2222/blog/posts?tag=history'),
-    axios.get('http://localhost:2222/blog/posts?tag=health'),
-    axios.get('http://localhost:2222/blog/posts?tag=startups'),
-    axios.get('http://localhost:2222/blog/posts?tag=science'),
-    axios.get('http://localhost:2222/blog/posts?tag=design'),
-    axios.get('http://localhost:2222/blog/posts?tag=culture'),
-    axios.get('http://localhost:2222/blog/posts?tag=politics'),
-    axios.get('http://localhost:2222/blog/posts?tag=science')
+    axios.get('http://localhost:8888/api/blog/posts?tag=tech'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=history'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=health'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=startups'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=science'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=design'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=culture'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=politics'),
+    axios.get('http://localhost:8888/api/blog/posts?tag=science')
   ])
   .then(axios.spread((response1, response2, response3, response4, response5, response6, response7, response8, response9) => {
     // Organizes data into an array
@@ -78,10 +82,11 @@ app.get('/api/posts', (req, res) => {
 })
 
 // Initial code for sortBy functionality
-app.get('/api/posts/sortBy', (req, res) => {
+app.get('/api/posts/sortBy', cache('60 minutes'), (req, res) => {
     axios.all([
-        axios.get('http://localhost:2222/blog/posts?tag=tech'),
-        axios.get('http://localhost:2222/blog/posts?tag=history')
+        // Replace with your custom url
+        axios.get('http://localhost:8888/api/blog/posts?tag=tech'),
+        axios.get('http://localhost:8888/api/blog/posts?tag=history')
       ])
       .then(axios.spread((response1, response2) => {
         let data = [

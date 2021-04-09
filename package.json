@@ -4,7 +4,7 @@
   "description": "Framework to fetch data based on filters",
   "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": " nodemon server/index.js"
   },
   "repository": {
@@ -18,9 +18,17 @@
   },
   "homepage": "https://github.com/DineshReddyKommera/Fetch_Blogs#readme",
   "dependencies": {
+    "apicache": "^1.6.2",
     "axios": "^0.21.1",
+    "chai": "^4.3.4",
     "express": "^4.17.1",
+    "mocha": "^8.3.2",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.7"
-    }
+    "nodemon": "^2.0.7",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2"
+  }
 }
