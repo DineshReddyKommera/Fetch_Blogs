@@ -26,7 +26,7 @@ app.get('/api/ping', (req, res) => {
 //Fetching all posts
 app.get('/api/posts', (req, res) => {
     //Replace with the custom url
-    axios.get('http://localhost/blog/posts')
+    axios.get('http://localhost:2222/api/posts')
     .then(response => {
       res.send(response.data)
     })
