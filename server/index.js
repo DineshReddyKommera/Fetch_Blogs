@@ -26,13 +26,25 @@ app.get('/api/ping', (req, res) => {
 //Fetching all posts
 app.get('/api/posts', (req, res) => {
     //Replace with the custom url
-    axios.get('http://localhost:2222/api/posts')
-    .then(response => {
-      res.send(response.data)
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    axios.all([
+        axios.get('http://localhost:2222/api/blog/posts?tag=item1'),
+        axios.get('http://localhost:2222/api/blog/posts?tag=item2')
+      ])
+      .then(axios.spread((response1, response2) => {
+        const data1 = response1.data.posts;
+        const data2 = response2.data.posts;
+        const posts = data1.concat(data2)
+        const post = {
+          posts
+        }
+        res.status(200).send(post);
+      }))
+      .catch(error => {
+        res.status(400).send({
+          error: 'Tags parameter is required'
+        })
+        console.log(error)
+      });
   })
 
 
