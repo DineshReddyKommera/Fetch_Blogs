@@ -1,0 +1,25 @@
+{
+  "name": "fetch_blogs",
+  "version": "1.0.0",
+  "description": "Framework to fetch data based on filters",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": " nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DineshReddyKommera/Fetch_Blogs.git"
+  },
+  "author": "Dinesh Reddy Kommera",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DineshReddyKommera/Fetch_Blogs/issues"
+  },
+  "homepage": "https://github.com/DineshReddyKommera/Fetch_Blogs#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7"
+  }
+}
