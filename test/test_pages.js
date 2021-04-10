@@ -2,64 +2,56 @@ const expect  = require('chai').expect;
 const request = require('request');
 const axios = require('axios');
 
-describe('Generic Framework for fetching data using filters', function() {
-  describe('Basic API', function() {
-    it('Should return the correct body for basic api', function(done) {
+describe('Back-End Challenge', function() {
+  describe('Step 1', function() {
+    it('Should return the correct body for step 1', function(done) {
         request('http://localhost:2222/api/ping', function(error, response, body) {
             expect(body).to.equal('{"success":"true"}');
             done();
         });
     });
-    it('Should return the correct status for basic api where route is correct', function(done) {
+    it('Should return the correct status code for step 1 where route is correct', function(done) {
       request('http://localhost:2222/api/ping', function(error, response, body) {
           expect(response.statusCode).to.equal(200);
           done();
       });
     });
-    it('Should return the correct status for basic api where route is incorrect', function(done) {
+    it('Should return the correct status code for step 1 where route is incorrect', function(done) {
       request('http://localhost:2222/api/pings', function(error, response, body) {
           expect(response.statusCode).to.equal(404);
           done();
       });
     });
   })
-  describe('Fetch all posts', function() {
-    it('Should return the proper status for fetch all posts for the correct route', function(done) {
+  describe('Step 2', function() {
+    it('Should return the proper status code for step 2 for the correct route', function(done) {
+      request('http://localhost:2222/api/posts/tech', function(error, response, body) {
+        expect(response.statusCode).to.equal(200);
+        done();
+      });
+    });
+    it('Should return the correct status code for step 2 where route is incorrect', function(done) {
+      request('http://localhost:2222/api/post/tech', function(error, response, body) {
+          expect(response.statusCode).to.equal(404);
+          done();
+      });
+    });
+    it('Should return the correct status code for step 2 where route does not have a tag', function(done) {
       request('http://localhost:2222/api/posts', function(error, response, body) {
-        expect(response.statusCode).to.equal(200);
-        done();
-      });
-    });
-    it('Should return the correct status for fetch all posts where route is incorrect', function(done) {
-      request('http://localhost:2222/api/post', function(error, response, body) {
           expect(response.statusCode).to.equal(404);
           done();
       });
     });
-    it('Should pass the test if all posts have at least one tag', function(done) {
-      axios.get('http://localhost:2222/api/posts')
-      .then(res => {
-        let tagsLength = true;
-        let post = res.data.posts;
-        // Grabs all posts and checks the length of the tags attribute array for each post
-        for (let i = 0; i < post.length; i++) {
-          if (post[i].tags.length < 1) {
-            tagsLength = false;
-            break;
-          }
-        }
-        // Test will fail if the length of the tags array is less than 1
-        expect(tagsLength).to.equal(true);
-        })
-        .catch(error => {
-          console.log(error)
-        })
-        done();
+    it('Should return the correct status code for step 2 when the user uses all three parameters', function(done) {
+      request('http://localhost:2222/api/posts/health,tech/likes/desc', function(error, response, body) {
+          expect(response.statusCode).to.equal(200);
+          done();
+      });
     });
     it('Should pass the test if all posts are unique by checking unique ids', function(done) {
-      axios.get('http://localhost:2222/api/posts')
+      axios.get('http://localhost:2222/api/posts/tech,history')
       .then(res => {
-        let post = res.data.posts;
+        let post = res.data;
         let postID = [];
         let postObj = {};
         let test = true;
@@ -84,24 +76,10 @@ describe('Generic Framework for fetching data using filters', function() {
         })
         done();
     });
-  })
-  describe('Fetch data using sortBy', function() {
-    it('Should return the proper status for fetch data using sortBy for the correct route', function(done) {
-      request('http://localhost:2222/api/posts/sortBy', function(error, response, body) {
-        expect(response.statusCode).to.equal(200);
-        done();
-      });
-    });
-    it('Should return the correct status for fetch data using sortBy where route is incorrect', function(done) {
-      request('http://localhost:2222/api/posts/sortByAsc', function(error, response, body) {
-          expect(response.statusCode).to.equal(404);
-          done();
-      });
-    });
-    it('Should pass the test if all posts are unique by checking unique ids', function(done) {
-      axios.get('http://localhost:2222/api/posts/sortBy')
+    it('Should pass the test if all posts are unique by checking unique ids using all route parameters', function(done) {
+      axios.get('http://localhost:2222/api/posts/tech,history/likes/asc')
       .then(res => {
-        let post = res.data.posts;
+        let post = res.data;
         let postID = [];
         let postObj = {};
         let test = true;
@@ -126,46 +104,51 @@ describe('Generic Framework for fetching data using filters', function() {
         })
         done();
     });
-    it('Should pass the test if all posts have at least one tag', function(done) {
-      axios.get('http://localhost:2222/api/posts/sortBy')
+    it('Should pass the test for correctly sorted values', function(done) {
+      axios.get('http://localhost:2222/api/posts/tech,health/likes/desc')
       .then(res => {
-        let tagsLength = true;
-        let post = res.data.posts;
-        // Grabs all posts and checks the length of the tags attribute array for each post
-        for (let i = 0; i < post.length; i++) {
-          if (post[i].tags.length < 1) {
-            tagsLength = false;
-            break;
-          }
-        }
-        // Test will fail if the length of the tags array is less than 1
-        expect(tagsLength).to.equal(true);
-        })
-        .catch(error => {
-          console.log(error)
-        })
-        done();
-    });
-    it('Should pass the test if all posts are ordered by likes in descending order', function(done) {
-      axios.get('http://localhost:2222/api/posts/sortBy')
-      .then(res => {
-        let post = res.data.posts;
+        let post = res.data;
         let postLikes = [];
-        // Grabs all posts and pushes likes to the postLikes array in the order that they appear
+        let test = true;
+        // Gets all post likes
         for (let i = 0; i < post.length; i++) {
           postLikes.push(post[i].likes)
         }
-        // Creates a sorted array from the array grabbed from the response
-        // Sorts in descending order to check if they are equal
-        let sortedLikes = postLikes.sort((a, b) => b - a);
-        // console.log(sortedLikes);
-        // Test will fail if the two arrays are not deeply equal
-        expect(postLikes).to.deep.equal(sortedLikes);
+        // Loops the likes and if i < i + 1, the test will fail
+        for (let i = 0; i < postLikes.length; i++) {
+          if (postLikes[i] < postLikes[i + 1]) {
+            test = false;
+          }
+        }
+        expect(test).to.equal(true);
         })
         .catch(error => {
           console.log(error)
         })
         done();
     });
-  })
-})
+    it('Should pass the test for correctly sorted values given the default parameters, as if the user did not use them', function(done) {
+      axios.get('http://localhost:2222/api/posts/tech,health')
+      .then(res => {
+        let post = res.data;
+        let postID = [];
+        let test = true;
+        // Gets all post id's because that is the default value to sort by
+        for (let i = 0; i < post.length; i++) {
+          postID.push(post[i].id)
+        }
+        // Loops the ids and if i > i + 1, the test will fail because the default is ascending order
+        for (let i = 0; i < postID.length; i++) {
+          if (postID[i] > postID[i + 1]) {
+            test = false;
+          }
+        }
+        expect(test).to.equal(true);
+        })
+        .catch(error => {
+          console.log(error)
+        })
+        done();
+    });
+  });
+});
