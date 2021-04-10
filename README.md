@@ -1,7 +1,5 @@
 # Fetch_Blogs
-
-A generic framework written with Node.js and Express.js to fetch data from APIs with filter and sort by options.
-
+Designed a generic framework using Express.js and Node.js to fetch data from APIs. 
 ### Run Instructions:
 
 node install npm <br />
